@@ -41,10 +41,10 @@ def percipitation():
     maxDate = dt.datex(2017,8,23)
     yearago = maxDate - dt.timedelta(days=365)
 
-    past_temp = (session.query(Measurement.date, Measurement.prcp)
-            .filter(Measurement.date<=maxDate)
-            .filter(Measurement.date>=yearago)
-            .order_by(Measurement.date).all())
+    past_temp = session.query(Measurement.date, Measurement.prcp).\
+                filter(Measurement.date<=maxDate).\
+                filter(Measurement.date>=yearago).\
+                order_by(Measurement.date).all()
 
     precip = {date: prcp for date, prcp in past_temp}
 
@@ -61,19 +61,19 @@ def tobs():
     maxDate = dt.date(2017,8,23)
     year_ago = maxDate - dt.timedelta(days=365)
 
-    tm = (session.query(Measurement.tobs)
-        .filter(Measurement.station == most_active_station)
-        .filter(Measurement.date<=maxDate)
-        .filter(Measurement.date>=yearago)
-        .order_by(Measurement.tobs).all())
+    tm = session.query(Measurement.tobs).\
+    filter(Measurement.station == most_active_station).\
+    filter(Measurement.date<=maxDate).\
+    filter(Measurement.date>=yearago).\
+    order_by(Measurement.tobs).all()
         
     return jsonify (tm)
 
 @app.route("/api/v1.0/<start>")
 def start(start= None):
     maxDate = dt.date(2017,8,23)
-    tobs_only = (session.query(Measurement.tobs)
-                .filter(Measurement.date.between(start, maxDate)).all())
+    tobs_only = session.query(Measurement.tobs).\
+                filter(Measurement.date.between(start, maxDate)).all()
 
     tobs_df = pd.DataFrame(tobs_only)
 
@@ -85,8 +85,8 @@ def start(start= None):
 
 @app.route("/api/v1.0/<start>/<end>")
 def stend(start = None, end = None):
-    tobs_only = (session.query(Measurement.tobs)
-                .filter(Measurement.date.between(start, end)).all())
+    tobs_only = session.query(Measurement.tobs).\
+                filter(Measurement.date.between(start, end)).all()
 
     tobs_df = pd.DataFrame(tobs_only)
 
