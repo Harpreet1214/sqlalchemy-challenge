@@ -46,9 +46,9 @@ def percipitation():
             .filter(Measurement.date>=yearago)
             .order_by(Measurement.date).all())
 
-        precip = {date: prcp for date, prcp in past_temp}
+    precip = {date: prcp for date, prcp in past_temp}
 
-        return jsonify (precip)
+    return jsonify (precip)
 
 @app.route("/api/v1.0/stations")
 def stations():
@@ -60,13 +60,14 @@ def stations():
 def tobs():
     maxDate = dt.date(2017,8,23)
     year_ago = maxDate - dt.timedelta(days=365)
-    temps = (session.query(Measurement.tobs)
+
+    tm = (session.query(Measurement.tobs)
         .filter(Measurement.station == most_active_station)
-        .filter(Measurement..date<=maxDate)
-        .filter((Measurement.date>=yearago)
+        .filter(Measurement.date<=maxDate)
+        .filter(Measurement.date>=yearago)
         .order_by(Measurement.tobs).all())
         
-        return jsonify (temps)
+    return jsonify (tm)
 
 @app.route("/api/v1.0/<start>")
 def start(start= None):
@@ -80,20 +81,20 @@ def start(start= None):
     tmax = tobs_df["tobs"].max()
     tmin = tobs_df["tobs"].min()
 
-        return jsonify(tavg, tmax, tmin)           
+    return jsonify(tavg, tmax, tmin)           
 
-    @app.route("/api/v1.0/<start>/<end>")
-def stend(start = none, end = none):
+@app.route("/api/v1.0/<start>/<end>")
+def stend(start = None, end = None):
     tobs_only = (session.query(Measurement.tobs)
                 .filter(Measurement.date.between(start, end)).all())
 
-                tobs_df = pd.DataFrame(tobs_only)
+    tobs_df = pd.DataFrame(tobs_only)
 
     tavg = tobs_df["tobs"].mean()
     tmax = tobs_df["tobs"].max()
     tmin = tobs_df["tobs"].min()
 
-        return jsonify(tavg, tmax, tmin)  
+    return jsonify(tavg, tmax, tmin)  
 
     if __name__ == '__main__':
         app.run (debug=True)    
